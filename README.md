@@ -2,7 +2,7 @@
 
 This repository presents the final project for the MATH70076 Data Science module at Imperial College London. The project investigates the factors influencing NBA legend Stephen Curry’s shot selection and success. Using detailed shot-level data spanning multiple seasons, this study applies a range of statistical and machine learning models to model and interpret shooting behavior.
 
-📁 Repository Structure
+##📁 Repository Structure
 analyse/: R scripts for key analytical components: data processing, exploratory data analysis (EDA), and model fitting & evaluation
 
 data/: Raw and processed datasets used in the analysis
