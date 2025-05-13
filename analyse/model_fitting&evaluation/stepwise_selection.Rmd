@@ -1,0 +1,93 @@
+---
+title: "Stepwise Selection"
+author: "Zhang Xinyi"
+date: "2025-05-11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = "C:/Users/12895/Desktop/DS coursework")
+```
+
+```{r}
+library(readr)
+library(dplyr)
+library(MASS)
+library(caret)
+library(pROC)
+df_train <- read.csv("data/derived/curry_shots_train.csv", stringsAsFactors = FALSE)
+df_test <- read.csv("data/derived/curry_shots_test.csv", stringsAsFactors = FALSE)
+char_cols <- names(df)[sapply(df, is.character)]
+
+char_cols <- names(df_train)[sapply(df_train, is.character)]
+
+for (col in char_cols) {
+  df_train[[col]] <- as.factor(df_train[[col]])
+}
+
+char_cols <- names(df_test)[sapply(df_test, is.character)]
+
+for (col in char_cols) {
+  df_test[[col]] <- as.factor(df_test[[col]])
+}
+
+
+full_model <- glm(made ~ log_distance_ft + sqrt_seconds_left + minutes_left + quarter +
+               action_group + zone_basic + is_home,
+                  data = df_train, family = binomial)
+
+# AIC
+stepwise_aic_model <- step(full_model, direction = "both", trace = TRUE)
+summary(stepwise_aic_model)
+pred_probs <- predict(stepwise_aic_model, newdata = df_test, type = "response")
+roc_obj <- roc(df_test$made, pred_probs)  
+best_coords <- coords(roc_obj, "best", ret = "threshold", transpose = FALSE) 
+threshold <- best_coords$threshold
+
+pred_class <- ifelse(pred_probs > threshold, 1, 0)
+pred_class <- factor(pred_class, levels = c(0, 1))
+df_test$made <- factor(df_test$made, levels = c(0, 1))
+conf_mat <- confusionMatrix(pred_class, df_test$made)
+print(conf_mat)
+auc_value <- auc(roc_obj) # AUC
+cat("AUC =", auc_value, "\n")
+```
+
+
+
+
+```{r}
+library(pROC)
+
+# Compute the ROC curve object
+roc_obj <- roc(response = df_test$made, predictor = pred_probs)
+
+# Plot the ROC curve
+plot(roc_obj, main = "ROC Curve for Logistic Model")
+abline(a = 0, b = 1, col = "gray", lty = 2)  # Add diagonal reference line
+
+# Get the optimal threshold (maximizing Sensitivity + Specificity - 1)
+best_coords <- coords(roc_obj, "best", ret = c("threshold", "sensitivity", "specificity"))
+best_coords
+```
+
+```{r}
+# BIC
+null_model <- glm(made ~ 1, data = df_train, family = binomial)
+stepwise_bic_model <- step(null_model,
+                  scope = list(lower = null_model, upper = full_model),
+                  direction = "both",
+                  k = log(nrow(df_train)))
+
+summary(stepwise_aic_model)
+pred_probs <- predict(stepwise_bic_model, newdata = df_test, type = "response")
+pred_labels <- ifelse(pred_probs > 0.5, 1, 0)
+pred_labels <- factor(pred_labels, levels = c(0, 1))
+df_test$made <- factor(df_test$made, levels = c(0, 1))
+confusionMatrix(data = pred_labels, reference = df_test$made)
+roc_obj <- roc(response = df_test$made, predictor = pred_probs)
+auc(roc_obj)
+```
+
+
+

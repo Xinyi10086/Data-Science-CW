@@ -1,0 +1,88 @@
+---
+title: "decision_tree"
+author: "Zhang Xinyi"
+date: "2025-05-11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = "C:/Users/12895/Desktop/DS coursework")
+```
+
+```{r}
+library(caret) 
+library(rpart.plot)
+library(readr)
+library(dplyr)
+library(rpart)         # Build decision trees
+library(rpart.plot)    # Visualize decision trees
+library(pROC)
+
+df_train <- read.csv("data/derived/curry_shots_train.csv", stringsAsFactors = FALSE)
+df_test <- read.csv("data/derived/curry_shots_test.csv", stringsAsFactors = FALSE)
+
+char_cols <- names(df_train)[sapply(df_train, is.character)]
+
+for (col in char_cols) {
+  df_train[[col]] <- as.factor(df_train[[col]])
+}
+
+char_cols <- names(df_test)[sapply(df_test, is.character)]
+
+for (col in char_cols) {
+  df_test[[col]] <- as.factor(df_test[[col]])
+}
+```
+
+
+```{r}
+df_tree <- df_train[, c("made", "distance_ft", "seconds_left", "minutes_left", 
+                  "quarter", "action_group", "shot_type", "zone_basic", "is_home", "x", "y")]
+df_tree_test <- df_test[, c("made", "distance_ft" ,"seconds_left", "minutes_left", 
+                  "quarter", "action_group", "shot_type", "zone_basic", "is_home", "x", "y")]
+
+df_tree$made <- as.factor(df_tree$made)
+df_tree$action_group <- as.factor(df_tree$action_group)
+df_tree$zone_basic <- as.factor(df_tree$zone_basic)
+df_tree$is_home <- as.factor(df_tree$is_home)
+df_tree$shot_type <- as.factor(df_tree$shot_type)
+df_tree$quarter <- as.factor(df_tree$quarter)
+
+df_tree_test$made <- as.factor(df_tree_test$made)
+df_tree_test$action_group <- as.factor(df_tree_test$action_group)
+df_tree_test$zone_basic <- as.factor(df_tree_test$zone_basic)
+df_tree_test$is_home <- as.factor(df_tree_test$is_home)
+df_tree_test$shot_type <- as.factor(df_tree_test$shot_type)
+df_tree_test$quarter <- as.factor(df_tree_test$quarter)
+
+# Remove missing values
+df_tree <- na.omit(df_tree)
+
+# fit model
+tree_model <- rpart(made ~ ., data = df_tree, method = "class", cp = 0.001)
+
+png("outputs/figures/decision_tree.png", width = 2300, height = 1500, res = 100)
+rpart.plot(tree_model,
+           type = 2,
+           extra = 104,
+           under = TRUE,
+           fallen.leaves = TRUE,
+           main = "Decision Tree for Shot Success",
+           cex = 1.4) 
+dev.off()
+
+
+tree_pred <- predict(tree_model, newdata = df_tree_test, type = "class") # predict the class
+tree_pred <- factor(tree_pred, levels = levels(df_tree_test$made)) #Ensure consistency in levels
+confusionMatrix(tree_pred, df_tree_test$made)
+
+tree_prob <- predict(tree_model, newdata = df_tree_test, type = "prob")[, "1"]
+roc_obj <- roc(response = df_tree_test$made,
+               predictor = tree_prob,
+               levels = rev(levels(df_tree_test$made)))
+auc_value <- auc(roc_obj)
+print(paste("Area under the curve (AUC):", round(auc_value, 4)))
+```
+
+
+

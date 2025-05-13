@@ -1,0 +1,50 @@
+---
+title: "neural_network"
+author: "Zhang Xinyi"
+date: "2025-05-11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = "C:/Users/12895/Desktop/DS coursework")
+```
+
+```{r}
+library(nnet)
+library(caret)
+library(dplyr)
+
+df_train <- read.csv("data/derived/curry_shots_train.csv", stringsAsFactors = FALSE)
+df_test <- read.csv("data/derived/curry_shots_test.csv", stringsAsFactors = FALSE)
+
+factor_vars <- c("action_group", "shot_type", "zone_basic", "is_home", "quarter")
+df_train[factor_vars] <- lapply(df_train[factor_vars], as.factor)
+df_test[factor_vars] <- lapply(df_test[factor_vars], as.factor)
+
+
+selected_vars <- c("made", "log_distance_ft", "minutes_left", 
+                   "action_group", "zone_basic", "is_home")
+df_train <- na.omit(df_train[, selected_vars])
+df_test <- na.omit(df_test[, selected_vars])
+
+
+df_train$made <- as.factor(df_train$made)
+df_test$made <- as.factor(df_test$made)
+
+
+formula <- made ~ .
+
+
+set.seed(129)
+nn_model <- nnet(formula, data = df_train, size = 5, maxit = 200, decay = 1e-4)
+
+
+pred_prob <- predict(nn_model, newdata = df_test, type = "raw")
+pred_class <- ifelse(pred_prob > 0.5, 1, 0)
+pred_class <- factor(pred_class, levels = c(0, 1))
+
+
+confusionMatrix(pred_class, df_test$made, positive = "1")
+```
+
+

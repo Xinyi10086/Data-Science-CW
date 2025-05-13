@@ -1,0 +1,82 @@
+---
+title: "logistic"
+author: "Zhang Xinyi"
+date: "2025-05-11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = "C:/Users/12895/Desktop/DS coursework")
+```
+
+```{r}
+library(readr)
+library(dplyr)
+library(MASS)
+library(caret) 
+# Load training and testing datasets
+df_train <- read.csv("data/derived/curry_shots_train.csv", stringsAsFactors = FALSE)
+df_test <- read.csv("data/derived/curry_shots_test.csv", stringsAsFactors = FALSE)
+
+# Convert character columns to factors
+char_cols <- names(df_train)[sapply(df_train, is.character)]
+for (col in char_cols) {
+  df_train[[col]] <- as.factor(df_train[[col]])
+}
+
+char_cols <- names(df_test)[sapply(df_test, is.character)]
+for (col in char_cols) {
+  df_test[[col]] <- as.factor(df_test[[col]])
+}
+
+# Fit logistic regression model
+model_logistic <- glm(made ~ log_distance_ft + sqrt_seconds_left + minutes_left + quarter +
+               action_group + zone_basic + is_home,
+             data = df_train, family = binomial)
+summary(model_logistic)
+
+# Predict probabilities on the test set
+pred_probs <- predict(model_logistic, newdata = df_test, type = "response")
+
+# ------------------ ROC / AUC ------------------
+roc_obj <- roc(response = df_test$made, predictor = pred_probs,
+               levels = rev(levels(factor(df_test$made))))  
+auc_val <- auc(roc_obj)
+print(paste("Area under the curve (AUC):", round(auc_val, 4)))
+
+plot(roc_obj, main = "ROC Curve – Logistic Regression")
+
+
+best_coords <- coords(roc_obj, "best",
+                      ret = c("threshold", "sensitivity", "specificity"))
+print(best_coords)
+
+pred_labels <- factor(ifelse(pred_probs >= best_coords$threshold, 1, 0), levels = c(0, 1))
+true_labels <- factor(df_test$made, levels = c(0, 1))
+
+conf_matrix <- confusionMatrix(pred_labels, true_labels)
+print(conf_matrix)
+```
+
+
+```{r}
+library(pROC)
+
+# Compute the ROC curve object
+roc_obj <- roc(response = df_test$made, predictor = pred_probs)
+
+# Plot the ROC curve
+plot(roc_obj, main = "ROC Curve for Logistic Model")
+abline(a = 0, b = 1, col = "gray", lty = 2)  # Add diagonal reference line
+
+# Get the optimal threshold (maximizing Sensitivity + Specificity - 1)
+best_coords <- coords(roc_obj, "best", ret = c("threshold", "sensitivity", "specificity"))
+best_coords
+```
+
+
+
+
+
+
+

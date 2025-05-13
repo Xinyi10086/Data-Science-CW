@@ -1,0 +1,49 @@
+---
+title: "SVM"
+author: "Zhang Xinyi"
+date: "2025-05-11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = "C:/Users/12895/Desktop/DS coursework")
+```
+
+```{r}
+library(e1071)
+library(caret)
+library(readr)
+
+df_train <- read.csv("data/derived/curry_shots_train.csv", stringsAsFactors = FALSE)
+df_test <- read.csv("data/derived/curry_shots_test.csv", stringsAsFactors = FALSE)
+
+features <- c("log_distance_ft", "minutes_left", 
+              "action_group", "shot_type", "zone_basic", "is_home", "x", "y")
+
+df_train <- df_train[, c(features, "made")]
+df_test <- df_test[, c(features, "made")]
+
+df_train$made <- as.factor(df_train$made)
+df_test$made <- as.factor(df_test$made)
+df_train$action_group <- as.factor(df_train$action_group)
+df_train$shot_type <- as.factor(df_train$shot_type)
+df_train$zone_basic <- as.factor(df_train$zone_basic)
+df_train$is_home <- as.factor(df_train$is_home)
+df_test$action_group <- as.factor(df_test$action_group)
+df_test$shot_type <- as.factor(df_test$shot_type)
+df_test$zone_basic <- as.factor(df_test$zone_basic)
+df_test$is_home <- as.factor(df_test$is_home)
+
+svm_model <- svm(made ~ ., data = df_train, kernel = "radial", cost = 1, gamma = 0.1)
+pred_svm <- predict(svm_model, newdata = df_test)
+confusionMatrix(pred_svm, df_test$made)
+```
+```{r}
+png("outputs/figures/svm.png", width = 500, height = 400, res = 100)
+# SVM based on x and y coordinates
+svm2 <- svm(made ~ x + y, data = df_train, kernel = "radial")
+plot(svm2, df_train[, c("x", "y", "made")],
+     main = "SVM classification plot")
+dev.off()
+```
+

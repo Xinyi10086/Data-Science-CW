@@ -1,0 +1,77 @@
+---
+title: "random_forest"
+author: "Zhang Xinyi"
+date: "2025-05-11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = "C:/Users/12895/Desktop/DS coursework")
+```
+
+```{r}
+library(tidyverse)
+library(caret)
+library(randomForest)
+library(pROC)
+df_train <- read.csv("data/derived/curry_shots_train.csv", stringsAsFactors = FALSE)
+df_test <- read.csv("data/derived/curry_shots_test.csv", stringsAsFactors = FALSE)
+
+char_cols_train <- names(df_train)[sapply(df_train, is.character)]
+df_train[char_cols_train] <- lapply(df_train[char_cols_train], as.factor)
+
+char_cols_test <- names(df_test)[sapply(df_test, is.character)]
+df_test[char_cols_test] <- lapply(df_test[char_cols_test], as.factor)
+
+df_train$made <- as.factor(df_train$made)
+
+# 训练随机森林模型
+set.seed(111)  # 可复现性
+rf_model <- randomForest(made ~ log_distance_ft + seconds_left + quarter +
+                           action_group + zone_basic + is_home,
+                         data = df_train, ntree = 500, importance = TRUE)
+
+pred_probs  <- predict(rf_model, newdata = df_test, type = "prob")[, "1"]  
+pred_labels <- ifelse(pred_probs >= 0.5, 1, 0)
+
+if ("made" %in% colnames(df_test)) {
+  df_test$made <- as.factor(df_test$made)
+  cm <- confusionMatrix(factor(pred_labels, levels = c(0, 1)), df_test$made)
+  print(cm)
+}
+
+roc_obj  <- roc(response = df_test$made,
+                predictor = pred_probs,
+                levels   = rev(levels(df_test$made))) 
+auc_val  <- auc(roc_obj)
+print(paste("Area under the curve (AUC):", round(auc_val, 4)))
+
+plot(roc_obj, main = "ROC Curve – Random Forest")
+```
+
+```{r}
+png("outputs/figures/random_forest.png", width = 2400, height = 1400, res = 120)
+
+rpart.plot(
+  tree_model,
+  type          = 2,
+  extra         = 104,
+  under         = TRUE,
+  fallen.leaves = TRUE,
+  box.palette   = "Grays",
+  branch        = 0.4,
+  cex           = 1.2,   
+  tweak         = 1,   
+  faclen        = 0,
+  nn            = TRUE,
+  roundint      = FALSE,
+  main          = "Decision Tree for Shot Success"
+)
+
+
+dev.off()
+```
+
+
+
+
