@@ -27,7 +27,7 @@ This repository presents the final project for the MATH70076 Data Science module
 
 ## 📄 Key Variables
 ### Dependent variable (outcome):
-- ** made**: Binary outcome indicating whether the shot was made (1) or missed (0).
+- **made**: Binary outcome indicating whether the shot was made (1) or missed (0).
 
 ### Selected predictors include:
 - **log_distance_ft**: Log-transformed shot distance in feet.
