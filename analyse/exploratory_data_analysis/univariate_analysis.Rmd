@@ -1,0 +1,90 @@
+---
+title: "univariate——analysis"
+author: "Zhang Xinyi"
+date: "2025-05-09"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = "C:/Users/12895/Desktop/DS coursework")
+```
+
+
+```{r}
+library(readr)
+df <- read.csv("data/derived/curry_shots_cleaned.csv")
+attach(df)
+```
+
+
+```{r}
+png("outputs/figures/univariate_analysis.png", width = 1000, height = 580, res = 80)
+par(mfrow = c(3, 4), oma = c(4, 1, 1, 1), mar = c(4, 4, 4, 1))
+
+# ====== Categorical Variables - Bar Plots ======
+
+# Shot outcome: made or missed
+barplot(prop.table(table(made)), col = "darkgreen",
+        main = "Shot Outcome (made)",
+        ylab = "Proportion", xlab = "Made", ylim = c(0, 1), axis.lty = 1)
+
+# Action type: e.g., Jump Shot, Layup, etc.
+barplot(prop.table(table(action_type)), col = "darkgreen",
+        main = "Top Action Types",
+        ylab = "Proportion", xlab = "Action", ylim = c(0, 0.4), axis.lty = 1)
+
+# Shot type: 2PT or 3PT
+barplot(prop.table(table(shot_type)), col = "darkgreen",
+        main = "Shot Type",
+        ylab = "Proportion", xlab = "Type", ylim = c(0, 1), axis.lty = 1)
+
+# Zone Basic: primary shooting zones
+barplot(prop.table(table(zone_basic)), col = "darkgreen",
+        main = "Zone Basic",
+        ylab = "Proportion", xlab = "Zone", ylim = c(0, 0.3), axis.lty = 1)
+
+# Zone Area: court areas (e.g., left side, right side, etc.)
+barplot(prop.table(table(zone_area)), col = "darkgreen",
+        main = "Zone Area",
+        ylab = "Proportion", xlab = "Area", ylim = c(0, 0.3), axis.lty = 1)
+
+# Season distribution
+barplot(prop.table(table(season)), col = "darkgreen",
+        main = "Season Distribution",
+        ylab = "Proportion", xlab = "Season", ylim = c(0, 0.07), axis.lty = 1)
+
+# ====== Numerical Variables - Histograms ======
+
+# Shot distance in feet
+hist(distance_ft, breaks = 40, col = "steelblue",
+     main = "Shot Distance (ft)",
+     probability = TRUE, xlab = "Distance (ft)", ylim = c(0, 0.08))
+
+# X-coordinate on the court
+hist(x, breaks = 40, col = "steelblue",
+     main = "Court X Location", probability = TRUE, xlab = "x", ylim = c(0, 0.03))
+
+# Y-coordinate on the court
+hist(y, breaks = 40, col = "steelblue",
+     main = "Court Y Location", probability = TRUE, xlab = "y", ylim = c(0, 0.025))
+
+# Time remaining (minutes)
+hist(minutes_left, breaks = 12, col = "steelblue",
+     main = "Minutes Left", probability = TRUE, xlab = "Minutes", ylim = c(0, 0.25))
+
+# Time remaining (seconds)
+hist(seconds_left, breaks = 30, col = "steelblue",
+     main = "Seconds Left", probability = TRUE, xlab = "Seconds", ylim = c(0, 0.08))
+
+# Quarter of the game (1st to 4th)
+hist(quarter, breaks = 4, col = "steelblue",
+     main = "Quarter", probability = TRUE, xlab = "Quarter", ylim = c(0, 0.4))
+
+# Save and close the plot
+dev.off()
+
+# Detach the data frame from the search path if previously attached
+detach(df)
+
+```
+

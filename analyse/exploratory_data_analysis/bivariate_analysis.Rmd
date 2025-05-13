@@ -1,0 +1,40 @@
+---
+title: "bivariate_analysis"
+author: "Zhang Xinyi"
+date: "2025-05-09"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = "C:/Users/12895/Desktop/DS coursework")
+```
+
+```{r}
+library(readr)
+library(GGally)
+library(ggplot2)
+library(dplyr)
+df <- read.csv("data/derived/curry_shots_cleaned.csv")
+attach(df)
+```
+
+```{r}
+# choose variables(continuous + binary)
+df_subset <- df %>%
+  select(made, distance_ft, x, y, minutes_left, seconds_left, quarter)
+
+# Convert 'made' to a factor for color grouping
+df_subset$made <- factor(df_subset$made, levels = c(0, 1), labels = c("Missed", "Made"))
+
+# Plot the pairwise correlation matrix
+png("outputs/figures/bivariate_analysis.png", width = 1000, height = 1000, res = 120)
+ggpairs(df_subset, 
+        aes(color = made, alpha = 0.5),
+        upper = list(continuous = wrap("cor", size = 3)),
+        lower = list(continuous = wrap("points", size = 0.5)),
+        diag = list(continuous = wrap("densityDiag"))) +
+  theme_minimal()
+dev.off()
+```
+
+

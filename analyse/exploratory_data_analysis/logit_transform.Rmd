@@ -1,0 +1,38 @@
+---
+title: "logit_transform"
+author: "Zhang Xinyi"
+date: "2025-05-11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = "C:/Users/12895/Desktop/DS coursework")
+```
+
+```{r}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(patchwork)
+library(plyr)
+library(gridExtra)
+df <- read.csv("data/derived/curry_shots_cleaned.csv")
+
+```
+
+
+```{r}
+plots1 <- plot_logit_transforms(df, "distance_ft")
+plots2 <- plot_logit_transforms(df, "x")
+plots3 <- plot_logit_transforms(df, "seconds_left")
+
+png("outputs/figures/Logit_Transformed.png", width = 950, height = 600, res = 100)
+all_plots <- c(plots1, plots2, plots3)
+suppressMessages({
+  grid.arrange(grobs = all_plots, ncol = 4, top = "Empirical Logit Plots for Transformed Variables")
+})
+dev.off()
+```
+
+
+

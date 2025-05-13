@@ -1,0 +1,108 @@
+---
+title: "Descriptive statistics"
+author: "Zhang Xinyi"
+date: "2025-05-07"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = "C:/Users/12895/Desktop/DS coursework")
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(patchwork)
+```
+
+
+```{r}
+df <- read.csv("data/derived/curry_shots_cleaned.csv")
+
+# Convert all character variables to factorized variables
+df <- df %>%
+  mutate(across(where(is.character), as.factor))
+
+str(df)
+```
+# Shooting Accuracy
+
+```{r}
+source("scr/draw_halfcourt.R")
+# ===== Shooting Accuracy by Season =====
+season_summary <- df %>%
+  group_by(season) %>%
+  summarise(accuracy = mean(made)) %>%
+  arrange(season)
+
+p1 <- ggplot(season_summary, aes(x = season, y = accuracy, group = 1, color = accuracy)) +
+  geom_line(linewidth = 1) +                   # Line connecting each season's accuracy
+  geom_point(size = 2) +                       # Dots for each season
+  scale_color_gradientn(colors = c("red", "orange", "green")) +  # Color gradient for accuracy
+  scale_y_continuous(limits = c(0.35, 0.55)) + # Y-axis range
+  labs(title = "Shooting Accuracy by Season",
+       x = "Season", y = "Field Goal Percentage") +
+  theme_minimal(base_family = "Times New Roman") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "none")              # Hide legend (optional)
+
+# ===== Shooting Accuracy by Court Zone (Zone Basic) =====
+zone_summary <- df %>%
+  group_by(zone_basic) %>%
+  summarise(accuracy = mean(made))
+
+p2 <- ggplot(zone_summary, aes(x = reorder(zone_basic, -accuracy), y = accuracy, color = accuracy)) +
+  geom_point(size = 2) +                                         # Dot plot for zones
+  scale_color_gradientn(colors = c("red", "orange", "green")) +
+  scale_y_continuous(limits = c(0, 1)) +
+  labs(title = "Shooting Accuracy by Zone",
+       x = "Shot Zone", y = "Field Goal Percentage") +
+  theme_minimal(base_family = "Times New Roman") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "none")
+
+# ===== Shooting Accuracy by Distance Range (Zone Range) =====
+range_summary <- df %>%
+  group_by(zone_range) %>%
+  summarise(accuracy = mean(made))
+
+p3 <- ggplot(range_summary, aes(x = reorder(zone_range, -accuracy), y = accuracy, color = accuracy)) +
+  geom_point(size = 2) +
+  scale_color_gradientn(colors = c("red", "orange", "green")) +
+  scale_y_continuous(limits = c(0, 1)) +
+  labs(title = "Shooting Accuracy by Distance Range",
+       x = "Distance Range", y = "Field Goal Percentage") +
+  theme_minimal(base_family = "Times New Roman") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "none")
+
+# ===== Shooting Accuracy by Action Type =====
+action_summary <- df %>%
+  group_by(action_type) %>%
+  summarise(accuracy = mean(made))
+
+p4 <- ggplot(action_summary, aes(x = reorder(action_type, -accuracy), y = accuracy, color = accuracy)) +
+  geom_point(size = 2) +
+  scale_color_gradientn(colors = c("red", "orange", "green")) +
+  scale_y_continuous(limits = c(0, 1)) +
+  labs(title = "Shooting Accuracy by Shot Type",
+       x = "Shot Type", y = "Field Goal Percentage") +
+  theme_minimal(base_family = "Times New Roman") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1, vjust = 1),
+        legend.position = "none")
+```
+
+```{r}
+png("outputs/figures/accuracy_visualization.png", width = 800, height = 850, res = 100)
+layout <- p1 / (p2 | p3) / p4 +
+  plot_layout(heights = c(0.8, 1, 1)) +
+  plot_annotation(
+    title = "Shooting Accuracy Analysis",
+    theme = theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5))
+  )
+print(layout)
+dev.off()
+```
+
+
+

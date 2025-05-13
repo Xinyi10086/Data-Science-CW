@@ -1,0 +1,147 @@
+---
+title: "shoot_position"
+author: "Zhang Xinyi"
+date: "2025-05-10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = "C:/Users/12895/Desktop/DS coursework")
+```
+
+
+```{r}
+library(readr)
+library(ggplot2)
+library(dplyr)
+library(patchwork)
+```
+
+
+```{r}
+df <- read.csv("data/derived/curry_shots_cleaned.csv")
+
+# Convert all character variables to factorized variables
+df <- df %>%
+  mutate(across(where(is.character), as.factor))
+
+str(df)
+```
+
+# Shooting position
+
+```{r}
+source("scr/draw_halfcourt.R")
+court <- draw_halfcourt(units = "ft")
+
+# ===== zone_range =====
+s2 <- court +
+  geom_point(
+    data = df,
+    aes(x = x * 0.1, y = y * 0.1, color = zone_range),
+    alpha = 0.2,
+    size = 0.6
+  ) +
+  scale_color_viridis_d(option = "plasma", end = 0.9) +
+  labs(
+    title = "Stephen Curry Shot Chart by Zone Range",
+    color = "Zone Range",
+    x = "Court X (ft)",
+    y = "Court Y (ft)"
+  ) +
+  guides(
+    color = guide_legend(override.aes = list(alpha = 1)) 
+  ) +
+  theme_minimal()
+
+# ===== zone_area =====
+s3 <- court +
+  geom_point(
+    data = df,
+    aes(x = x * 0.1, y = y * 0.1, color = zone_area),
+    alpha = 0.2,
+    size = 0.6
+  ) +
+  scale_color_viridis_d(option = "plasma", end = 0.9) +
+  labs(
+    title = "Stephen Curry Shot Chart by Zone Area",
+    color = "Zone Area",
+    x = "Court X (ft)",
+    y = "Court Y (ft)"
+  ) +
+  guides(
+    color = guide_legend(override.aes = list(alpha = 1))  
+  ) +
+  theme_minimal()
+
+# ===== zone_basic =====
+s4 <- court +
+  geom_point(
+    data = df,
+    aes(x = x * 0.1, y = y * 0.1, color = zone_basic),
+    alpha = 0.2,
+    size = 0.6
+  ) +
+  scale_color_viridis_d(option = "plasma", end = 0.9) +
+  labs(
+    title = "Stephen Curry Shot Chart by Zone (Basic)",
+    color = "Zone Basic",
+    x = "Court X (ft)",
+    y = "Court Y (ft)"
+  ) +
+  guides(
+    color = guide_legend(override.aes = list(alpha = 1))  
+  ) +
+  theme_minimal()
+
+# ==== action_type ==== 
+df <- df %>%
+  mutate(
+    action_grouped = case_when(
+      grepl("Jump|Pull", action_type, ignore.case = TRUE) ~ "Jump Shot",
+      grepl("Hook", action_type, ignore.case = TRUE) ~ "Hook Shot",
+      grepl("Dunk", action_type, ignore.case = TRUE) ~ "Dunk",
+      grepl("Layup|Driving", action_type, ignore.case = TRUE) ~ "Driving Layup",
+      grepl("Bank", action_type, ignore.case = TRUE) ~ "Bank Shot",
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  filter(!is.na(action_grouped))  # Remove rows with undefined action types
+
+s5 <- court +
+  geom_point(
+    data = df,
+    aes(x = x * 0.1, y = y * 0.1, color = action_grouped),
+    alpha = 0.5,
+    size = 1
+  ) +
+  scale_color_manual(values = c(
+    "Jump Shot" = "yellow",
+    "Hook Shot" = "blue",
+    "Dunk" = "red",
+    "Driving Layup" = "pink",
+    "Bank Shot" = "green"
+  )) +
+  labs(
+    title = "Stephen Curry Shot Chart by Action Type (Grouped)",
+    color = "Action Type",
+    x = "Court X (ft)",
+    y = "Court Y (ft)"
+  ) +
+  guides(
+    color = guide_legend(override.aes = list(alpha = 1, size = 4))  # Make legend points larger and fully opaque
+  ) +
+  theme_minimal()
+
+png("outputs/figures/shooting_position_visualization.png", width = 900, height = 1000, res = 100)
+((s2 | s3) / (s4 | s5)) +
+  plot_annotation(
+    title = "Curry Shooting position",
+    theme = theme(
+      plot.title = element_text(hjust = 0.5, size = 16, face = "bold")
+    )
+  )
+dev.off()
+```
+
+
