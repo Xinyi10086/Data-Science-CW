@@ -1,0 +1,30 @@
+---
+title: "univariate_clean"
+author: "Zhang Xinyi"
+date: "2025-05-10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = "C:/Users/12895/Desktop/DS coursework")
+```
+
+```{r}
+library(readr)
+df <- read.csv("data/derived/curry_shots_cleaned.csv")
+
+df$action_type_lower <- tolower(df$action_type)
+
+
+df$action_group <- with(df, ifelse(grepl("jump|fadeaway|step back|pullup|turnaround", action_type_lower), "Jump Shot",
+                            ifelse(grepl("hook", action_type_lower), "Hook Shot",
+                            ifelse(grepl("dunk", action_type_lower), "Dunk",
+                            ifelse(grepl("driving|running|layup", action_type_lower), "Driving Layup",
+                            ifelse(grepl("bank", action_type_lower), "Bank Shot", "Other"))))))
+
+# delete distance_ft > 40
+df_filtered <- subset(df, distance_ft < 40)
+
+write.csv(df_filtered, "data/derived/curry_shots_grouped_clean.csv", row.names = FALSE)
+```
+

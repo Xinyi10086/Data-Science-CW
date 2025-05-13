@@ -1,0 +1,35 @@
+---
+title: "transform_clean"
+author: "Zhang Xinyi"
+date: "2025-05-11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = "C:/Users/12895/Desktop/DS coursework")
+```
+
+```{r}
+library(readr)
+df <- read.csv("data/derived/curry_shots_grouped_clean.csv")
+
+df <- df %>%
+  mutate(
+    log_distance_ft = log(distance_ft + 1),
+    sqrt_seconds_left = sqrt(seconds_left)
+  )
+
+write_csv(df, "data/derived/curry_shots_transformed_clean.csv")
+
+df <- read.csv("data/derived/curry_shots_transformed_clean.csv", stringsAsFactors = FALSE)
+
+char_cols <- names(df)[sapply(df, is.character)]
+
+for (col in char_cols) {
+  df[[col]] <- as.factor(df[[col]])
+}
+
+# Check the structure to confirm conversion
+str(df)
+```
+

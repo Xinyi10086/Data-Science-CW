@@ -1,0 +1,29 @@
+---
+title: "data_split"
+author: "Zhang Xinyi"
+date: "2025-05-11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = "C:/Users/12895/Desktop/DS coursework")
+```
+
+```{r}
+library(readr)
+df <- read.csv("data/derived/curry_shots_transformed_clean.csv", stringsAsFactors = FALSE)
+
+
+set.seed(123)
+
+train_indices <- sample(seq_len(nrow(df)), size = 0.7 * nrow(df))
+
+# split
+train_data <- df[train_indices, ]
+test_data  <- df[-train_indices, ]
+
+# save as CSV
+write.csv(train_data, "data/derived/curry_shots_train.csv", row.names = FALSE)
+write.csv(test_data, "data/derived/curry_shots_test.csv", row.names = FALSE)
+```
+

@@ -1,0 +1,73 @@
+---
+title: "Clean dataset"
+author: "Zhang Xinyi"
+date: "2025-05-07"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = "C:/Users/12895/Desktop/DS coursework")
+```
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(readr)
+```
+
+```{r}
+df <- read_csv("data/raw/curry_shots.csv", show_col_types = FALSE)
+# Remove uninformative columns
+df <- df %>%
+  select(-GRID_TYPE, -GAME_EVENT_ID, -PLAYER_ID, -PLAYER_NAME,
+         -TEAM_ID, -TEAM_NAME, -EVENT_TYPE, -SHOT_ATTEMPTED_FLAG)
+
+# Check for missing values
+missing_summary <- colSums(is.na(df))
+print("Missing values：")
+print(missing_summary)
+                            
+##### Delete the outliers
+# Check that the distance of the 3PT Field Goal is reasonable
+# For a '3PT Field Goal', SHOT_DISTANCE should be >= 21.65. For '2PT Field Goal', SHOT_DISTANCE should be < 23.75
+invalid_3pt <- which(df$SHOT_TYPE == "3PT Field Goal" & df$SHOT_DISTANCE < 21.65)
+invalid_2pt <- which(df$SHOT_TYPE == "2PT Field Goal" & df$SHOT_DISTANCE >= 23.75)
+# Display the number of lines that do not match
+cat("Unreasonable 3PT Number of offers: ", length(invalid_3pt), "\n")
+cat("Unreasonable 2PT Number of offers: ", length(invalid_2pt), "\n")
+df <- df[-c(invalid_3pt, invalid_2pt), ] # delete these lines
+
+df <- df %>%
+  mutate(is_home = ifelse(HTM == "GSW", 1, 0))
+
+# Renaming columns
+df <- df %>%
+  rename(
+    quarter = PERIOD,
+    minutes_left = MINUTES_REMAINING,
+    seconds_left = SECONDS_REMAINING,
+    action_type = ACTION_TYPE,
+    shot_type = SHOT_TYPE,
+    zone_basic = SHOT_ZONE_BASIC,
+    zone_area = SHOT_ZONE_AREA,
+    zone_range = SHOT_ZONE_RANGE,
+    distance_ft = SHOT_DISTANCE,
+    x = LOC_X,
+    y = LOC_Y,
+    made = SHOT_MADE_FLAG,
+    date = GAME_DATE,
+    season = SEASON,
+    home_team = HTM,
+    away_team = VTM
+  )
+
+cat("Cleansed data dimensions：\n")
+print(dim(df))
+
+# Save the cleaning data
+write.csv(df, "data/derived/curry_shots_cleaned.csv", row.names = FALSE)
+```
+
+
+
