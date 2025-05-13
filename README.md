@@ -21,9 +21,9 @@ This repository presents the final project for the MATH70076 Data Science module
 ## 📊 Analysis Summary
 
 - **Objective**: Analyze Stephen Curry’s shot-level data to identify spatial, temporal, and contextual factors that predict shot success.
-- **Modeling Techniques Used:**: Logistic regression (GLM, stepwise with AIC/BIC), Decision Trees and Random Forests, Support Vector Machines (SVM), K-Nearest Neighbors (KNN), Neural Networks(NN).
-- **Key Features Considered:**: Shot distance, game quarter, clock time, Action type (e.g., jump shot, layup), Home/away status, Shot location coordinates.
-- **Diagnostics and Evaluation:**: Confusion matrices, ROC curves, empirical logit plots, Visualization of decision boundaries, Model comparison via accuracy, recall, precision, and AUC.
+- **Modeling Techniques Used**: Logistic regression (GLM, stepwise with AIC/BIC), Decision Trees and Random Forests, Support Vector Machines (SVM), K-Nearest Neighbors (KNN), Neural Networks(NN).
+- **Key Features Considered**: Shot distance, game quarter, clock time, Action type (e.g., jump shot, layup), Home/away status, Shot location coordinates.
+- **Diagnostics and Evaluation**: Confusion matrices, ROC curves, empirical logit plots, Visualization of decision boundaries, Model comparison via accuracy, recall, precision, and AUC.
 
 ## 📄 Key Variables
 ### Dependent variable (outcome):
