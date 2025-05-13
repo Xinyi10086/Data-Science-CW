@@ -23,11 +23,9 @@ df <- read.csv("data/derived/curry_shots_cleaned.csv")
 ```{r}
 source("scr/plot_logit.R")
 
-# ==== 拟合包含变量的逻辑回归模型（包含所有连续变量）====
 model <- glm(made ~ distance_ft + x + y + minutes_left + seconds_left,
              data = df, family = binomial)
 
-# ==== 计算每个样本的 logit 值 ====
 df$logit <- log(fitted(model) / (1 - fitted(model)))
 
 p1 <- plot_logit("distance_ft", "Shot Distance (ft)")
