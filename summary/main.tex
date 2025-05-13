@@ -1,0 +1,122 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% PREAMBLE
+
+\documentclass[a4paper, 12pt]{article}
+
+% General document formatting
+\usepackage[margin=1.25in]{geometry}
+\usepackage[parfill]{parskip}
+\usepackage[utf8]{inputenc}
+
+% Figures
+\usepackage{graphicx}
+\usepackage[section]{placeins} 
+% References 
+\usepackage[authoryear,round]{natbib}
+    
+% Related to math
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+
+% Hyperlinks
+\usepackage[colorlinks]{hyperref}
+
+% Author details
+\title{An Analysis of the Factors Influencing Stephen Curry's Shot Selection}
+\author{06006350}
+\date{Compiled: \today}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\maketitle
+
+\textbf{Github Repo:} \href{https://github.com/zakvarty/eds-notes-quarto/releases/tag/v1.2.0-alpha}{\color{blue}{REPLACE-WITH-LINK-TO-YOUR-TAGGED-RELEASE}}
+
+\section{Project Description}
+
+
+This study addresses a classification problem: identifying the factors that shape NBA legend Stephen Curry’s shot selection, determining which variables govern his field‑goal success, and, from a data‑driven perspective, elucidating why he is regarded as one of the league’s pre‑eminent scorers. Using a bespoke web‑scraping pipeline, we collected Curry’s complete regular‑season shot‑level data from the 2009–10 to 2024–25 seasons, totaling 18,353 observations. This dataset includes detailed spatial, temporal, and contextual features such as shot distance, game quarter, clock time, action type, and home‑court status. 
+
+Prior to model fitting, we conducted an extensive exploratory data analysis (EDA), revealing intuitive and domain-consistent patterns: shots taken closer to the basket and during early quarters had higher success rates, while corner threes and breakaway layups exhibited distinctive spatial efficiencies. Empirical logit plots and partial dependence diagnostics further illustrated key nonlinearities in shooting behaviour. 
+
+We then applied a suite of machine learning and statistical models—including generalized linear models (GLM), decision trees, random forests, stepwise logistic regression (AIC and BIC), support vector machines (SVM), and neural networks (NN)—to predict both shot selection and outcome. Among them, the neural network emerged as the most accurate model, identifying distance to the basket, court location, and temporal pressure as the dominant predictive factors. The findings culminate in a data‑driven framework that offers actionable insights for players and coaches seeking to emulate or strategically defend against Curry’s historically unparalleled shot profile.
+
+%=============================================
+\pagebreak
+%=============================================
+
+\section{Assessment Criteria}
+
+\textbf{Technical Competence:} 
+
+\begin{itemize}
+\item Constructed a custom web-scraping pipeline using the \texttt{nba\_api} package to retrieve and consolidate all $18,353$ of Curry’s regular-season field goal attempts, including detailed spatial, temporal, and contextual features.
+\item Employed R for full-cycle data analysis: preprocessing, transformation, empirical visualization, and predictive modeling using a diverse set of algorithms (GLM, decision trees, random forests, SVM, neural networks).
+\end{itemize}
+
+\textbf{User Interface:} 
+
+\begin{itemize}
+\item Developed intuitive visualizations such as heatmaps and decision boundaries to display model predictions and spatial shooting tendencies.
+\item Report is clearly structured.
+\end{itemize}
+
+\textbf{Analysis and Interpretation:} 
+
+\begin{itemize}
+\item Conducted extensive exploratory data analysis to uncover empirical shot patterns; applied transformations based on model diagnostics.
+\item Compared seven models using metrics including accuracy, recall, precision, AUC, and F1-score; highlighted the neural network’s superiority in capturing non-linear decision factors.
+\end{itemize}
+
+\textbf{Presentation and Communication:} 
+
+\begin{itemize}
+\item The report is well-structured with clear sections on background, data, methodology, model evaluation, and conclusion. 
+\item Graphs and tables have descriptive captions, fonts and explanations.
+\end{itemize}
+
+\textbf{Reproducibility and Documentation:} 
+
+\begin{itemize}
+\item All analysis was conducted in Latex.
+\item The project includes detailed comments in code chunks and appropriate justification for methodological choices.
+\item Wrote separate R scripts for each part of the workflow.
+\item Saved all plots in outputs.
+\end{itemize}
+
+\textbf{Project Management:} 
+
+\begin{itemize}
+\item Scripts are modular and organized by task.
+\item Final results and report are published on GitHub with a tagged release.
+\end{itemize}
+
+%=============================================
+\pagebreak
+%=============================================
+
+\section{Project Reflection}
+
+\textbf{Learnings:}
+
+\begin{itemize}
+\item Gained a foundational understanding of the full data science workflow, including how to organize project files systematically and apply consistent, meaningful file naming conventions.
+\item Learned how to publish projects on GitHub, including uploading files, writing clear README documentation, and managing version control effectively.
+\item Became familiar with writing a comprehensive data science report—from data exploration to model evaluation—and reinforced theoretical knowledge of data cleaning, regression, and machine learning techniques through practical application.
+\end{itemize}
+
+\textbf{Challenges:}
+
+\begin{itemize}
+\item Most predictive models performed suboptimally, indicating potential missing variables in the data collection process. This highlighted the importance of capturing key contextual features to improve model accuracy.
+\item Still encountered difficulties in the data preprocessing stage, especially with complex cleaning tasks such as handling inconsistent factor levels and engineering meaningful features from raw variables.
+\end{itemize}
+
+\textbf{Further Development:}
+
+\begin{itemize}
+\item Integrate SportVU or Second~Spectrum tracking feeds to embed defender pressure, screen efficacy, and other spatio‑temporal 
+micro‑features. Adopt a Bayesian hierarchical framework to estimate season‑ and opponent‑specific effects dynamically.  
+\end{itemize}
+
+\end{document}
