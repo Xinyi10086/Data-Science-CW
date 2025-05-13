@@ -43,7 +43,7 @@ This repository presents the final project for the MATH70076 Data Science module
 
 ---
 
-## R & R Packages Used
+## 📄 R & R Packages Used
 -`ggplot2`, `patchwork`, `dplyr`, `forcats`, `MASS`, `readr`
 
 -`broom`, `knitr`, `kableExtra`, `stringr`, `caret`, `nnet`
@@ -52,7 +52,7 @@ This repository presents the final project for the MATH70076 Data Science module
 
 ---
 
-## Data Source
+## 📄 Data Source
 Shot-level data was collected through web scraping datasets containing Stephen Curry’s regular-season performance from 2009–2025. Each record includes shot location, timing, context, and outcome.
 
 ---
