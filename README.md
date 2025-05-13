@@ -5,7 +5,7 @@ This repository presents the final project for the MATH70076 Data Science module
 ---
 
 ## 📁 Repository Structure
-- : 
+
 -`data/`: Raw and processed datasets used in the analysis
 -`analyse/`: R scripts for key analytical components: data processing, exploratory data analysis (EDA), and model fitting & evaluation
 -`outputs/`: Figures and visualizations generated throughout the analysis
