@@ -1,0 +1,119 @@
+
+Dataset Name: curry_shots.csv
+Description: Shot chart data for Stephen Curry, including shot location, time, and outcome.
+Source: NBA Stats official website - Shot Chart API endpoint
+Acquisition Date: 2025-05-06
+Author: Xinyi Zhang
+
+Field Descriptions:
+
+1. GRID_TYPE
+   - Description: Type of shot chart data
+   - Type: String
+   - Example: "Shot Chart Detail"
+
+2. GAME_ID
+   - Description: Unique identifier for the game
+   - Type: Integer
+   - Example: 20900015
+
+3. GAME_EVENT_ID
+   - Description: Identifier for the specific event (e.g., shot attempt)
+   - Type: Integer
+
+4. PLAYER_ID
+   - Description: NBA player ID
+   - Type: Integer
+
+5. PLAYER_NAME
+   - Description: Name of the player
+   - Type: String
+   - Example: "Stephen Curry"
+
+6. TEAM_ID
+   - Description: NBA team ID
+   - Type: Integer
+
+7. TEAM_NAME
+   - Description: Full name of the team
+   - Type: String
+   - Example: "Golden State Warriors"
+
+8. PERIOD
+   - Description: Game period (1 = Q1, 2 = Q2, etc.)
+   - Type: Integer
+   - Unit: Quarter
+
+9. MINUTES_REMAINING
+   - Description: Minutes remaining in the period
+   - Type: Integer
+
+10. SECONDS_REMAINING
+    - Description: Seconds remaining in the period
+    - Type: Integer
+
+11. EVENT_TYPE
+    - Description: Type of play event (e.g., "Missed Shot", "Made Shot")
+    - Type: String
+
+12. ACTION_TYPE
+    - Description: Specific type of shot taken
+    - Type: String
+    - Example: "Jump Shot"
+
+13. SHOT_TYPE
+    - Description: Basic classification of the shot (2PT or 3PT)
+    - Type: String
+
+14. SHOT_ZONE_BASIC
+    - Description: Coarse zone classification
+    - Type: String
+
+15. SHOT_ZONE_AREA
+    - Description: Court region where the shot was taken
+    - Type: String
+
+16. SHOT_ZONE_RANGE
+    - Description: Distance band of the shot (e.g., "16-24 ft.")
+    - Type: String
+
+17. SHOT_DISTANCE
+    - Description: Distance of the shot from the basket
+    - Type: Integer
+    - Unit: Feet
+
+18. LOC_X
+    - Description: X-coordinate of the shot on the court (relative to center)
+    - Type: Integer
+    - Unit: NBA court scale
+
+19. LOC_Y
+    - Description: Y-coordinate of the shot on the court
+    - Type: Integer
+
+20. SHOT_ATTEMPTED_FLAG
+    - Description: Flag indicating whether a shot was attempted
+    - Type: Integer (0 = no, 1 = yes)
+
+21. SHOT_MADE_FLAG
+    - Description: Flag indicating whether a shot was made
+    - Type: Integer (0 = missed, 1 = made)
+
+22. GAME_DATE
+    - Description: Date the game was played
+    - Type: Date (YYYYMMDD)
+
+23. HTM
+    - Description: Home team abbreviation
+    - Type: String
+    - Example: "GSW"
+
+24. VTM
+    - Description: Visiting team abbreviation
+    - Type: String
+    - Example: "HOU"
+
+25. SEASON
+    - Description: NBA season
+    - Type: String
+    - Example: "2009-10"
