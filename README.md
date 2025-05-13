@@ -18,12 +18,16 @@ This repository presents the final project for the MATH70076 Data Science module
 
 -`summary/`: Reflective summary document, LaTeX files, bibliography and associated material for submission.
 
+---
+
 ## 📊 Analysis Summary
 
 - **Objective**: Analyze Stephen Curry’s shot-level data to identify spatial, temporal, and contextual factors that predict shot success.
 - **Modeling Techniques Used**: Logistic regression (GLM, stepwise with AIC/BIC), Decision Trees and Random Forests, Support Vector Machines (SVM), K-Nearest Neighbors (KNN), Neural Networks(NN).
 - **Key Features Considered**: Shot distance, game quarter, clock time, Action type (e.g., jump shot, layup), Home/away status, Shot location coordinates.
 - **Diagnostics and Evaluation**: Confusion matrices, ROC curves, empirical logit plots, Visualization of decision boundaries, Model comparison via accuracy, recall, precision, and AUC.
+
+---
 
 ## 📄 Key Variables
 ### Dependent variable (outcome):
@@ -37,12 +41,30 @@ This repository presents the final project for the MATH70076 Data Science module
 - **is_home**: Indicator for whether the shot was taken at home.
 - **x, y**: Court coordinates (used for spatial modeling and visualization).
 
+---
+
 ## R & R Packages Used
 -ggplot2, patchwork, dplyr, forcats, MASS
 
 -broom, knitr, kableExtra, stringr, caret, nnet
 
 -e1071, rpart, randomForest, class, pROC
+
+---
+
+## Data Source
+Shot-level data was collected through web scraping and/or curated datasets containing Stephen Curry’s regular-season performance from 2009–2025. Each record includes shot location, timing, context, and outcome.
+
+---
+
+## 👤 Author
+
+06006350
+
+Imperial College London 
+
+May 2025
+
 
 
 
